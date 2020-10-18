@@ -1,0 +1,570 @@
+penapi: 3.0.3
+info:
+  version: 1.0.0
+  title: Time tracker API
+  description: >-
+    Diese API ermöglicht das erfassen von Arbeitszeiten
+
+tags:
+  - name: Presence
+  - name: TimeTracking
+  - name: Account
+
+servers:
+  - url: 'https://timetrack.com'
+
+x-amazon-apigateway-request-validators:
+  basic:
+    validateRequestBody: true
+    validateRequestParameters: true
+x-amazon-apigateway-request-validator: basic
+
+x-amazon-apigateway-gateway-responses:
+  ACCESS_DENIED:
+    responseTemplates:
+      "application/json": "{\"state\": \"err\", \"code\": 403, \"object\": { \"message\": $context.error.messageString, \"type\":  \"$context.error.responseType\", \"stage\": \"$context.stage\", \"resourcePath\": \"$context.resourcePath\", \"detail\": \"$context.error.validationErrorString\" } }"
+  API_CONFIGURATION_ERROR:
+    responseTemplates:
+      "application/json": "{\"state\": \"err\", \"code\": 500, \"object\": { \"message\": $context.error.messageString, \"type\":  \"$context.error.responseType\", \"stage\": \"$context.stage\", \"resourcePath\": \"$context.resourcePath\", \"detail\": \"$context.error.validationErrorString\" } }"
+  BAD_REQUEST_PARAMETERS:
+    responseTemplates:
+      "application/json": "{\"state\": \"err\", \"code\": 404, \"object\": { \"message\": $context.error.messageString, \"type\":  \"$context.error.responseType\", \"stage\": \"$context.stage\", \"resourcePath\": \"$context.resourcePath\", \"detail\": \"$context.error.validationErrorString\" } }"
+  BAD_REQUEST_BODY:
+    responseTemplates:
+      "application/json": "{\"state\": \"err\", \"code\": 404, \"object\": { \"message\": $context.error.messageString, \"type\":  \"$context.error.responseType\", \"stage\": \"$context.stage\", \"resourcePath\": \"$context.resourcePath\", \"detail\": \"$context.error.validationErrorString\" } }"
+  DEFAULT_4XX:
+    responseTemplates:
+      "application/json": "{\"state\": \"err\", \"code\": 404, \"object\": { \"message\": $context.error.messageString, \"type\":  \"$context.error.responseType\", \"stage\": \"$context.stage\", \"resourcePath\": \"$context.resourcePath\", \"detail\": \"$context.error.validationErrorString\" } }"
+  DEFAULT_5XX:
+    responseTemplates:
+      "application/json": "{\"state\": \"err\", \"code\": 500, \"object\": { \"message\": $context.error.messageString, \"type\":  \"$context.error.responseType\", \"stage\": \"$context.stage\", \"resourcePath\": \"$context.resourcePath\", \"detail\": \"$context.error.validationErrorString\" } }"
+  EXPIRED_TOKEN:
+    responseTemplates:
+      "application/json": "{\"state\": \"err\", \"code\": 403, \"object\": { \"message\": $context.error.messageString, \"type\":  \"$context.error.responseType\", \"stage\": \"$context.stage\", \"resourcePath\": \"$context.resourcePath\", \"detail\": \"$context.error.validationErrorString\" } }"
+  INVALID_SIGNATURE:
+    responseTemplates:
+      "application/json": "{\"state\": \"err\", \"code\": 403, \"object\": { \"message\": $context.error.messageString, \"type\":  \"$context.error.responseType\", \"stage\": \"$context.stage\", \"resourcePath\": \"$context.resourcePath\", \"detail\": \"$context.error.validationErrorString\" } }"
+  INTEGRATION_FAILURE:
+    responseTemplates:
+      "application/json": "{\"state\": \"err\", \"code\": 500, \"object\": { \"message\": $context.error.messageString, \"type\":  \"$context.error.responseType\", \"stage\": \"$context.stage\", \"resourcePath\": \"$context.resourcePath\", \"detail\": \"$context.error.validationErrorString\" } }"
+  INTEGRATION_TIMEOUT:
+    responseTemplates:
+      "application/json": "{\"state\": \"err\", \"code\": 500, \"object\": { \"message\": $context.error.messageString, \"type\":  \"$context.error.responseType\", \"stage\": \"$context.stage\", \"resourcePath\": \"$context.resourcePath\", \"detail\": \"$context.error.validationErrorString\" } }"
+  INVALID_API_KEY:
+    responseTemplates:
+      "application/json": "{\"state\": \"err\", \"code\": 403, \"object\": { \"message\": $context.error.messageString, \"type\":  \"$context.error.responseType\", \"stage\": \"$context.stage\", \"resourcePath\": \"$context.resourcePath\", \"detail\": \"$context.error.validationErrorString\" } }"
+  MISSING_AUTHENTICATION_TOKEN:
+    responseTemplates:
+      "application/json": "{\"state\": \"err\", \"code\": 403, \"object\": { \"message\": $context.error.messageString, \"type\":  \"$context.error.responseType\", \"stage\": \"$context.stage\", \"resourcePath\": \"$context.resourcePath\", \"detail\": \"$context.error.validationErrorString\" } }"
+  QUOTA_EXCEEDED:
+    responseTemplates:
+      "application/json": "{\"state\": \"err\", \"code\": 500, \"object\": { \"message\": $context.error.messageString, \"type\":  \"$context.error.responseType\", \"stage\": \"$context.stage\", \"resourcePath\": \"$context.resourcePath\", \"detail\": \"$context.error.validationErrorString\" } }"
+  REQUEST_TOO_LARGE:
+    responseTemplates:
+      "application/json": "{\"state\": \"err\", \"code\": 404, \"object\": { \"message\": $context.error.messageString, \"type\":  \"$context.error.responseType\", \"stage\": \"$context.stage\", \"resourcePath\": \"$context.resourcePath\", \"detail\": \"$context.error.validationErrorString\" } }"
+  RESOURCE_NOT_FOUND:
+    responseTemplates:
+      "application/json": "{\"state\": \"err\", \"code\": 404, \"object\": { \"message\": $context.error.messageString, \"type\":  \"$context.error.responseType\", \"stage\": \"$context.stage\", \"resourcePath\": \"$context.resourcePath\", \"detail\": \"$context.error.validationErrorString\" } }"
+  THROTTLED:
+    responseTemplates:
+      "application/json": "{\"state\": \"err\", \"code\": 500, \"object\": { \"message\": $context.error.messageString, \"type\":  \"$context.error.responseType\", \"stage\": \"$context.stage\", \"resourcePath\": \"$context.resourcePath\", \"detail\": \"$context.error.validationErrorString\" } }"
+  UNAUTHORIZED:
+    responseTemplates:
+      "application/json": "{\"state\": \"err\", \"code\": 403, \"object\": { \"message\": $context.error.messageString, \"type\":  \"$context.error.responseType\", \"stage\": \"$context.stage\", \"resourcePath\": \"$context.resourcePath\", \"detail\": \"$context.error.validationErrorString\" } }"
+  UNSUPPORTED_MEDIA_TYPE:
+    responseTemplates:
+      "application/json": "{\"state\": \"err\", \"code\": 404, \"object\": { \"message\": $context.error.messageString, \"type\":  \"$context.error.responseType\", \"stage\": \"$context.stage\", \"resourcePath\": \"$context.resourcePath\", \"detail\": \"$context.error.validationErrorString\" } }"
+
+paths:
+
+	'/account/':
+		get:
+			tags:
+				- Account
+			description: Get list of all Accounts
+			responses:
+				'200':
+					description: Successfull response
+					content:
+						'application/json':
+							schema:
+								additionalProperties: false
+								required:
+									- state
+									- code
+									- object
+								type: object
+								properties:
+									state:
+										type: string
+										enum:
+										  - ok
+										  - err
+									code:
+										$ref: '#/components/schemas/ResponseCode'
+									objectList:
+										type: array
+										item:
+											
+	
+
+  /account/{AccountUuid}:
+    get:
+      tags:
+        - Account
+      description: Get Information about the given Account
+      parameters:
+        - $ref: '#/components/parameters/AccountUuid'
+      responses:
+        '200':
+          description: "the successfull response"
+          content:
+            'application/json':
+              schema:
+                additionalProperties: false
+                required:
+                  - state
+                  - code
+                  - object
+                type: object
+                properties:
+                  state:
+                    type: string
+                    enum:
+                      - ok
+                      - err
+                  code:
+                    $ref: '#/components/schemas/ResponseCode'
+                  object:
+                    type: object
+                    additionalProperties: false
+                    required:
+                      - firstName
+                      - lastName
+                      - workhoursPerWeek
+                      - workdaysPerWeek
+                    properties:
+                      asdfasdfasdfasdf
+  /presence/type/:
+    get:
+      description: "Get list of all presence Types eg. holiday, sick, homeoffice"
+      tags:
+        - Presence
+      responses:
+        '200':
+          description: "the successfull response"
+          content:
+            'application/json':
+              schema:
+                additionalProperties: false
+                required:
+                  - state
+                  - code
+                  - objectList
+                type: object
+                properties:
+                  state:
+                    type: string
+                    enum:
+                      - ok
+                      - err
+                  code:
+                    $ref: '#/components/schemas/ResponseCode'
+                  objectList:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/PresenceTypeModel'
+                    example:
+                      $ref: '#/components/examples/PresenceType'
+
+  /presence/:
+    post:
+      description: "manages the holidays, and on/absences of the employees"
+      tags:
+        - Presence
+      parameters:
+        - in: query
+          name: force
+          description: >
+            if a day of presence is entered, usually the days previously entered with a standard type are considered. Force ignores this procedure
+          schema:
+            type: boolean
+          required: false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              additionalProperties: false
+              required:
+                - objectList
+              properties:
+                sudo:
+                  type: string
+                  format: uuid
+                  description: "account id for which the request should be executed"
+                objectList:
+                  type: object
+                  required:
+                      - presenceType
+                  properties:
+                    presenceType:
+                      $ref: '#/components/schemas/PresenceTypeModel'
+                    startDate:
+                      type: string
+                      format: date
+                      description: Use only year-month-day (timethings are useless)
+                    endDate:
+                      type: string
+                      format: date
+                      description: Use only year-month-day (timethings are useless)
+      responses:
+        '200':
+          description: "Returns the created responses filled with the created uuids"
+          content:
+            'application/json':
+              schema:
+                additionalProperties: false
+                required:
+                  - state
+                  - code
+                  - objectList
+                type: object
+                properties:
+                  state:
+                    type: string
+                    enum:
+                      - ok
+                      - err
+                  code:
+                    $ref: '#/components/schemas/ResponseCode'
+                  objectList:
+                    type: array
+                    items:
+                      additionalProperties: false
+                      type: object
+                      required:
+                        - uuid
+                        - presenceType
+                        - startDate
+                        - endDate
+                      properties:
+                        uuid:
+                          type: string
+                          format: uuid
+                        presenceType:
+                          $ref: '#/components/schemas/PresenceTypeModel'
+                        startDate:
+                          type: string
+                          format: date
+                          description: Use only year-month-day (timethings are useless)
+                        endDate:
+                          type: string
+                          format: date
+                          description: Use only year-month-day (timethings are useless)
+                        excluded:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              uuid:
+                                type: string
+                                format: uuid
+                              presenceType:
+                                $ref: '#/components/schemas/PresenceTypeModel'
+                              startDate:
+                                type: string
+                                format: date
+                                description: Use only year-month-day (timethings are useless)
+                              endDate:
+                                type: string
+                                format: date
+                                description: Use only year-month-day (timethings are useless)
+
+
+      x-amazon-apigateway-request-validator: basic
+      x-amazon-apigateway-auth:
+        type: AWS_IAM
+      x-amazon-apigateway-integration:
+        type: AWS_PROXY
+        httpMethod: POST
+        uri: $TimeTrackerLambdaIntegrationUri
+        credentials: $TimeTrackerLambdaApigatewayRole
+
+  "/presence/{AccountUuid}/byDate/{fromDate}/{toDate}":
+    get:
+      description: "Get information from specified timespan"
+      tags:
+        - Presence
+      parameters:
+        - $ref: '#/components/parameters/AccountUuid'
+        - $ref: '#/components/parameters/fromDate'
+        - $ref: '#/components/parameters/toDate'
+      responses:
+        '200':
+          description: 'Successful request, returns information about the requested date/period' 
+          content:
+            'application/json':
+              schema:
+                additionalProperties: false
+                required:
+                  - state
+                  - code
+                  - objectList
+                type: object
+                properties:
+                  state:
+                    type: string
+                    enum:
+                      - ok
+                      - err
+                  code:
+                    $ref: '#/components/schemas/ResponseCode'
+                  objectList:
+                    type: array
+                    items: 
+                      $ref: '#/components/schemas/PresenceTypeModel'
+	"/recording/statistic":
+		get:
+			description: "Get statistics "
+			response:
+				'200':
+					description: ''
+					content:
+						'application/json':
+							schema:
+								additionalProperties: false
+								required:
+									- state
+									- code
+									- objectList
+								properties:
+									state:
+										type: string
+										enum:
+											- ok
+											- err
+										code:
+											$ref: '#/components/schemas/ResponseCode'
+										objectList:
+											type: array
+											items:
+												$ref: 
+
+
+RecordingEntry:
+	sudo => Nutzer für wen diese einträge sind
+
+	object
+		
+		createdOn <= Erstellungszeitpunkt
+		trackedOn <= Erfassungszeitpunkt
+		
+		start-date-time <= Zeit erfassungs start datum
+		end-date-time <= Zeiterfassungs enddatum
+		pause <= pause zwischen der oben definierten zeitspanne
+
+		workforceBalance <= Gearbeitete zeit dezimal
+		targetBalance <= zeit zielvorgabe für diesen tag 
+		
+		note <= Zusätzliche anmerkungen für die erfasste zeit
+		report <= Notzien über die geleistete arbeit
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+components:
+
+  schemas:
+
+    ResponseCode:
+      type: integer
+      enum:
+        - 200
+	
+		AccountModel:
+			firstName:
+      	type: string
+      lastName:
+      	type: string
+      eMail:
+      	type: string
+        format: email
+      locationState:
+      	type: string
+        enum:
+        	- bw
+          - bay
+          - be
+          - bb
+          - hb
+          - hh
+          - he
+          - mv
+          - ni
+          - nw
+          - rp
+          - sl
+          - sn
+          - st
+          - sh
+          - th
+      workdaysPerWeek:
+      	tpe: integer
+      workhoursPerWeek:
+        type: integer
+      staffNumber:
+        type: string
+      birthday:
+        type: string
+        format: date
+      streetName:
+      	type: string
+      houseNumber:
+      	type: string
+      zipCode:
+      	type: string
+      cityName:
+      	type: string
+
+    PresenceTypeModel:
+      type: object
+      properties:
+        key:
+          type: string
+        name:
+          type: string
+        displayName:
+          type: string
+        workforce:
+          $ref: '#/components/schemas/PresenceTypeWorkforce'
+        owner:
+          type: object
+          properties:
+            organizationUsage:
+              type: boolean
+            owner:
+              type: string
+            default:
+              type: boolean
+      example:
+        $ref: '#/components/examples/PresenceType'
+
+
+    PresenceTypeWorkforce:
+      type: integer
+      enum:
+        - -10
+        - -20
+        - 0
+        - 1
+        - 2
+        - 3
+        - 4
+        - 5
+        - 6
+        - 7
+        - 8
+        - 9
+        - 10
+        - 11
+        - 12
+        - 13
+        - 14
+        - 15
+        - 16
+        - 17
+        - 18
+        - 19
+        - 20
+        - 21
+        - 22
+        - 23
+        - 24
+      description: >
+        workforce means how many hours must be worked that day
+        * - 10 means the calculated Indivitual Hours for the current Employee eg. 8h per day
+        * - 20 means the half of the calculated Indivitual Hours for the current Employee eg. 4h per day
+        * 0 means the day is free of work
+        * 1 means the employee must work one hour
+        * 2 means the employee must work two hour
+        * 3 means the employee must work three hour
+        * 4 ...
+        
+  parameters:
+    AccountUuid:
+      in: path
+      name: AccountUuid
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: >
+        uuid of the account to which the request should apply
+    fromDate:
+      in: path
+      name: fromDate
+      schema:
+        type: string
+        format: date
+      required: true
+      description: >
+        Date specification from when which data should be included in the query
+    toDate:
+      in: path
+      name: toDate
+      schema:
+        type: string
+        format: date
+      required: true
+      description: >
+        Date specification until when which data should be included in the query
+
+  examples:
+  
+    PresenceType:
+      value:
+        - key: 10
+          name: WEEKEND
+          displayName: Wochenende
+          workforce: 0
+        - key: 20
+          name: WORKDAY
+          displayName: Arbeitstag
+          workforce: -10
+        - key: 30
+          name: ILLNESS
+          displayName: Krank
+          workforce: 0
+        - key: 40
+          name: HOLIDAY
+          displayName: Urlaub
+          workforce: 0
+        - key: 50
+          name: PUBLIC_HOLIDAY
+          displayName: Feiertag
+          workforce: 0
+        - key: 60
+          name: SCHOOL
+          displayName: Schule
+          workforce: 0
+        - key: 70
+          name: CHRISTMAS
+          displayName: Weihnachten
+          workforce: -20
+        - key: 80
+          name: SILVESTER
+          displayName: Silvester
+          workforce: -20
